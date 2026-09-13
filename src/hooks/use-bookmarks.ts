@@ -1,13 +1,16 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { bookmarksApi, type BookmarkFilters } from '@/api/bookmarks'
 import type { CreateBookmarkInput, UpdateBookmarkInput } from '@/types'
 
 export const BOOKMARKS_QUERY_KEY = ['bookmarks']
 
 export function useBookmarks(filters?: BookmarkFilters) {
-  return useQuery({
+  const perPage = 20
+  return useInfiniteQuery({
     queryKey: [...BOOKMARKS_QUERY_KEY, filters ?? {}],
-    queryFn: () => bookmarksApi.getAll(filters),
+    queryFn: ({ pageParam }) => bookmarksApi.getAll({ ...filters, lastId: pageParam, perPage }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => lastPage.length < perPage ? undefined : lastPage[lastPage.length - 1]?.id,
   })
 }
 

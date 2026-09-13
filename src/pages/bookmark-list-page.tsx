@@ -1,4 +1,4 @@
-import { useMemo, type FC } from "react";
+import { useMemo, useCallback, type FC } from "react";
 import { useParams } from "react-router-dom";
 import { useAtom, useAtomValue } from "jotai";
 import { searchQueryAtom, bookmarkViewModeAtom } from "@/atoms/ui";
@@ -33,11 +33,23 @@ export const BookmarkListPage: FC<BookmarkListPageProps> = ({ view }) => {
         : undefined;
 
   const {
-    data: bookmarks = [],
+    data,
     isLoading,
     isError,
     refetch,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   } = useBookmarks(serverFilters);
+  const bookmarks = useMemo(() => data?.pages.flatMap((page) => page) ?? [], [data]);
+  const loadMoreRef = useCallback((node: HTMLDivElement | null) => {
+    if (!node) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) fetchNextPage();
+    }, { rootMargin: "400px" });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
   const { data: folders = [] } = useFolders();
   const { data: tags = [] } = useTags();
 
@@ -136,6 +148,7 @@ export const BookmarkListPage: FC<BookmarkListPageProps> = ({ view }) => {
         currentTagId={tagId}
         viewMode={viewMode}
       />
+      <div ref={loadMoreRef} className="h-4" aria-hidden="true" />
     </div>
   );
 };

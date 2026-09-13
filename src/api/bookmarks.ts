@@ -11,7 +11,12 @@ export interface BookmarkFilters {
   hasTags?: boolean;
 }
 
-function buildQueryString(filters?: BookmarkFilters): string {
+export interface BookmarkPageParams extends BookmarkFilters {
+  lastId?: string;
+  perPage?: number;
+}
+
+function buildQueryString(filters?: BookmarkPageParams): string {
   if (!filters) return "";
   const params = new URLSearchParams();
   if (filters.isFavorite !== undefined)
@@ -20,12 +25,16 @@ function buildQueryString(filters?: BookmarkFilters): string {
     params.set("hasFolder", String(filters.hasFolder));
   if (filters.hasTags !== undefined)
     params.set("hasTags", String(filters.hasTags));
+  if (filters.lastId) params.set("last_id", filters.lastId);
+  if (filters.perPage !== undefined) params.set("per_page", String(filters.perPage));
+  if (filters.lastId) params.set("last_id", filters.lastId);
+  if (filters.perPage !== undefined) params.set("per_page", String(filters.perPage));
   const qs = params.toString();
   return qs ? `?${qs}` : "";
 }
 
 export const bookmarksApi = {
-  getAll: (filters?: BookmarkFilters) =>
+  getAll: (filters?: BookmarkPageParams) =>
     apiClient<Bookmark[]>(`/bookmarks${buildQueryString(filters)}`),
   create: (data: CreateBookmarkInput) =>
     apiClient<Bookmark>("/bookmarks", {
