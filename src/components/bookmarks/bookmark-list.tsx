@@ -37,16 +37,16 @@ export const BookmarkList = ({
   if (isLoading) {
     if (viewMode === "grid") {
       return (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
             <div
               key={i}
-              className="rounded-xl border border-slate-200/90 overflow-hidden animate-pulse"
+              className="rounded-2xl border border-line bg-card overflow-hidden animate-pulse"
             >
-              <div className="aspect-video bg-slate-200" />
+              <div className="h-[76px] bg-black/5" />
               <div className="p-3 space-y-2">
-                <div className="h-4 w-2/3 bg-slate-200 rounded" />
-                <div className="h-3 w-1/2 bg-slate-100 rounded" />
+                <div className="h-4 w-2/3 bg-black/5 rounded" />
+                <div className="h-3 w-1/2 bg-black/[0.04] rounded" />
               </div>
             </div>
           ))}
@@ -55,16 +55,14 @@ export const BookmarkList = ({
     }
 
     return (
-      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs divide-y divide-slate-100 overflow-hidden">
+      <div className="flex flex-col gap-0.5">
         {[1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className="flex items-start gap-4 p-4 animate-pulse">
-            <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-lg bg-slate-200 shrink-0" />
-            <div className="flex-1 space-y-2 py-1">
-              <div className="h-4 w-2/3 bg-slate-200 rounded" />
-              <div className="h-3 w-4/5 bg-slate-100 rounded" />
-              <div className="h-3 w-1/3 bg-slate-100 rounded mt-2" />
+          <div key={i} className="flex items-center gap-3.5 px-3 py-2.5 animate-pulse">
+            <div className="size-9 rounded-lg bg-black/5 shrink-0" />
+            <div className="flex-1 space-y-2">
+              <div className="h-3.5 w-1/2 bg-black/5 rounded" />
+              <div className="h-3 w-1/3 bg-black/[0.04] rounded" />
             </div>
-            <div className="w-6 h-6 rounded bg-slate-100 shrink-0" />
           </div>
         ))}
       </div>
@@ -73,7 +71,7 @@ export const BookmarkList = ({
 
   if (isError) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 text-center bg-white rounded-2xl border border-rose-100 shadow-xs">
+      <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-rose-100">
         <AlertCircle className="w-10 h-10 text-rose-500 mb-3" />
         <h3 className="text-base font-semibold text-slate-800">
           Failed to load bookmarks
@@ -95,7 +93,7 @@ export const BookmarkList = ({
 
   if (bookmarks.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 text-center bg-white rounded-2xl border border-dashed border-slate-200">
+      <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-dashed border-line">
         <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center mb-3">
           <BookmarkX className="w-6 h-6 text-slate-400" />
         </div>
@@ -131,8 +129,8 @@ export const BookmarkList = ({
     <div
       className={cn(
         viewMode === "grid"
-          ? "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"
-          : "bg-white rounded-2xl border border-slate-200/90 shadow-2xs divide-y divide-slate-100 overflow-hidden",
+          ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          : "flex flex-col gap-0.5",
       )}
     >
       {bookmarks.map((b) => {

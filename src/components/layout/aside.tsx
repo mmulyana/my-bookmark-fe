@@ -11,6 +11,7 @@ import { useFolders } from "@/hooks/use-folders";
 import { SearchBar } from "@/components/bookmarks/search";
 import {
   Bookmark,
+  Home,
   Plus,
   Folder as FolderIcon,
   Tag as TagIcon,
@@ -19,9 +20,48 @@ import {
   LogOut,
   Star,
   Inbox,
+  SquarePen,
+  type LucideIcon,
 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+
+const navClass = ({ isActive }: { isActive: boolean }) =>
+  cn(
+    "flex items-center gap-2.5 px-3 h-8 rounded-lg text-[13px] transition-colors cursor-pointer min-w-0",
+    isActive
+      ? "bg-black/[0.07] text-ink font-medium"
+      : "text-ink/75 hover:bg-black/[0.04]",
+  );
+
+const NavItem = ({
+  to,
+  icon: Icon,
+  label,
+  end,
+}: {
+  to: string;
+  icon: LucideIcon;
+  label: string;
+  end?: boolean;
+}) => (
+  <NavLink to={to} end={end} className={navClass}>
+    <Icon className="w-4 h-4 shrink-0 text-ink/60" />
+    <span className="truncate">{label}</span>
+  </NavLink>
+);
+
+const SectionLabel = ({
+  children,
+  action,
+}: {
+  children: string;
+  action?: React.ReactNode;
+}) => (
+  <div className="flex items-center justify-between px-3 mb-1 h-5">
+    <span className="text-[11px] font-medium text-muted">{children}</span>
+    {action}
+  </div>
+);
 
 export const Aside = () => {
   const { data: folders = [] } = useFolders();
@@ -39,168 +79,109 @@ export const Aside = () => {
   };
 
   return (
-    <aside className="w-64 bg-slate-300/10 border-r border-slate-200 flex flex-col shrink-0 sticky top-0 h-screen">
-      <div className="h-14 flex items-center gap-2 px-4 shrink-0">
-        <div className="w-6 h-6 rounded-md bg-blue-600 text-white flex items-center justify-center shrink-0">
-          <Bookmark className="w-3.5 h-3.5 fill-white" />
+    <aside className="w-64 bg-sidebar border-r border-line flex flex-col shrink-0 sticky top-0 h-screen">
+      <div className="h-14 flex items-center justify-between gap-2 pl-4 pr-3 shrink-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="w-5 h-5 rounded-md bg-ink text-white flex items-center justify-center shrink-0">
+            <Bookmark className="w-3 h-3 fill-white" />
+          </div>
+          <span className="text-[13px] font-semibold truncate">My Bookmark</span>
         </div>
-        <span className="text-sm font-normal text-slate-900">My Bookmark</span>
-      </div>
-
-      <div className="px-4 pb-2 space-y-2.5">
-        <SearchBar />
-        <Button
-          size="sm"
+        <button
           onClick={() => setBookmarkModal({ isOpen: true, mode: "create" })}
-          className="w-full gap-2 shadow-sm font-normal"
+          className="size-8 rounded-full bg-white border border-line shadow-xs grid place-items-center text-ink/70 hover:text-ink transition-colors cursor-pointer"
+          title="New bookmark"
+          aria-label="New bookmark"
         >
-          <Plus className="w-3.5 h-3.5" />
-          Add Bookmark
-        </Button>
+          <SquarePen className="w-4 h-4" />
+        </button>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-6">
-        <div>
-          <NavLink
-            to="/"
-            end
-            className={({ isActive }) =>
-              cn(
-                "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-normal transition-colors cursor-pointer",
-                isActive
-                  ? "bg-slate-100 text-slate-900 font-normal"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
-              )
-            }
-          >
-            <Bookmark className="w-4 h-4" />
-            <span>All Bookmarks</span>
-          </NavLink>
+      <div className="px-3 pb-3">
+        <SearchBar />
+      </div>
 
-          <NavLink
-            to="/favorites"
-            className={({ isActive }) =>
-              cn(
-                "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-normal transition-colors cursor-pointer",
-                isActive
-                  ? "bg-slate-100 text-slate-900 font-normal"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
-              )
-            }
-          >
-            <Star className="w-4 h-4" />
-            <span>Favorites</span>
-          </NavLink>
-
-          <NavLink
-            to="/unsorted"
-            className={({ isActive }) =>
-              cn(
-                "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-normal transition-colors cursor-pointer",
-                isActive
-                  ? "bg-slate-100 text-slate-900 font-normal"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
-              )
-            }
-          >
-            <Inbox className="w-4 h-4" />
-            <span>Unsorted</span>
-          </NavLink>
-
-          <NavLink
-            to="/tags"
-            className={({ isActive }) =>
-              cn(
-                "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-normal transition-colors cursor-pointer",
-                isActive
-                  ? "bg-slate-100 text-slate-900 font-normal"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
-              )
-            }
-          >
-            <TagIcon className="w-4 h-4" />
-            <span>Tags</span>
-          </NavLink>
+      <nav className="flex-1 overflow-y-auto px-3 pb-2 space-y-5 scrollbar-none">
+        <div className="space-y-0.5">
+          <NavItem to="/" end icon={Home} label="Home" />
+          <NavItem to="/bookmarks" icon={Bookmark} label="All Bookmarks" />
         </div>
 
-        <div>
-          <div className="flex items-center justify-between px-3 mb-1.5">
-            <span className="text-xs font-normal text-slate-400 uppercase tracking-wider">
-              Folders
-            </span>
-            <button
-              onClick={() => setFolderModal({ isOpen: true, mode: "create" })}
-              className="p-1 rounded text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
-              title="Add new folder"
-            >
-              <Plus className="w-3.5 h-3.5" />
-            </button>
-          </div>
+        <div className="space-y-0.5">
+          <SectionLabel>Pinned</SectionLabel>
+          <NavItem to="/favorites" icon={Star} label="Favorites" />
+          <NavItem to="/unsorted" icon={Inbox} label="Unsorted" />
+          <NavItem to="/tags" icon={TagIcon} label="Tags" />
+        </div>
 
-          <div className="space-y-0.5">
-            {folders.length === 0 ? (
-              <p className="px-3 py-1.5 text-xs text-slate-400 italic">
-                No folders yet
-              </p>
-            ) : (
-              folders.map((folder) => (
-                <div
-                  key={folder.id}
-                  className="group flex items-center justify-between rounded-lg hover:bg-slate-50"
+        <div className="space-y-0.5">
+          <SectionLabel
+            action={
+              <button
+                onClick={() => setFolderModal({ isOpen: true, mode: "create" })}
+                className="p-0.5 rounded text-muted hover:text-ink hover:bg-black/5 transition-colors cursor-pointer"
+                title="Add new folder"
+                aria-label="Add new folder"
+              >
+                <Plus className="w-3.5 h-3.5" />
+              </button>
+            }
+          >
+            Folders
+          </SectionLabel>
+
+          {folders.length === 0 ? (
+            <p className="px-3 py-1 text-xs text-muted">No folders yet</p>
+          ) : (
+            folders.map((folder) => (
+              <div key={folder.id} className="group relative flex items-center">
+                <NavLink
+                  to={`/folder/${folder.id}`}
+                  className={(s) => cn(navClass(s), "flex-1")}
                 >
-                  <NavLink
-                    to={`/folder/${folder.id}`}
-                    className={({ isActive }) =>
-                      cn(
-                        "flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-sm flex-1 truncate transition-colors cursor-pointer",
-                        isActive
-                          ? "bg-slate-100 text-slate-900 font-normal"
-                          : "text-slate-600 group-hover:text-slate-900",
-                      )
-                    }
-                  >
-                    <FolderIcon className="w-4 h-4 shrink-0" />
-                    <span className="truncate">{folder.name}</span>
-                  </NavLink>
+                  <FolderIcon className="w-4 h-4 shrink-0 text-ink/60" />
+                  <span className="truncate">{folder.name}</span>
+                </NavLink>
 
-                  <div className="opacity-0 group-hover:opacity-100 flex items-center pr-2 gap-0.5 shrink-0 transition-opacity">
-                    <button
-                      onClick={() =>
-                        setFolderModal({ isOpen: true, mode: "edit", folder })
-                      }
-                      className="p-1 text-slate-400 hover:text-slate-700 rounded transition-colors cursor-pointer"
-                      title="Edit folder"
-                    >
-                      <Pencil className="w-3 h-3" />
-                    </button>
-                    <button
-                      onClick={() =>
-                        setDeleteDialog({
-                          isOpen: true,
-                          type: "folder",
-                          id: folder.id,
-                          title: folder.name,
-                        })
-                      }
-                      className="p-1 text-slate-400 hover:text-rose-600 rounded transition-colors cursor-pointer"
-                      title="Delete folder"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </button>
-                  </div>
+                <div className="absolute right-1.5 opacity-0 group-hover:opacity-100 flex items-center gap-0.5 transition-opacity">
+                  <button
+                    onClick={() =>
+                      setFolderModal({ isOpen: true, mode: "edit", folder })
+                    }
+                    className="p-1 text-muted hover:text-ink rounded transition-colors cursor-pointer"
+                    title="Edit folder"
+                    aria-label="Edit folder"
+                  >
+                    <Pencil className="w-3 h-3" />
+                  </button>
+                  <button
+                    onClick={() =>
+                      setDeleteDialog({
+                        isOpen: true,
+                        type: "folder",
+                        id: folder.id,
+                        title: folder.name,
+                      })
+                    }
+                    className="p-1 text-muted hover:text-rose-600 rounded transition-colors cursor-pointer"
+                    title="Delete folder"
+                    aria-label="Delete folder"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </button>
                 </div>
-              ))
-            )}
-          </div>
+              </div>
+            ))
+          )}
         </div>
       </nav>
 
-      <div className="p-3">
+      <div className="p-3 border-t border-line">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-normal text-slate-500 hover:bg-slate-50 hover:text-rose-600 transition-colors cursor-pointer"
+          className="w-full flex items-center gap-2.5 px-3 h-8 rounded-lg text-[13px] text-ink/65 hover:bg-black/[0.04] hover:text-rose-600 transition-colors cursor-pointer"
         >
-          <LogOut className="w-3.5 h-3.5" />
+          <LogOut className="w-4 h-4" />
           Log out
         </button>
       </div>

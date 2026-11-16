@@ -30,7 +30,7 @@ export function useBookmarkPageMeta({
       case Boolean(folderId):
         pageMeta = {
           pageTitle: currentFolder?.name ?? "Folder",
-          PageIcon: <FolderIcon className="w-6 h-6 text-amber-500" />,
+          PageIcon: <FolderIcon className="w-5 h-5 text-amber-500" />,
           emptyMessage: currentFolder
             ? `No bookmarks in folder "${currentFolder.name}"`
             : "Folder is empty.",
@@ -40,7 +40,7 @@ export function useBookmarkPageMeta({
       case Boolean(tagId):
         pageMeta = {
           pageTitle: currentTag ? `#${currentTag.name}` : "Tag",
-          PageIcon: <TagIcon className="w-5 h-5 text-indigo-500" />,
+          PageIcon: <TagIcon className="w-5 h-5 text-muted" />,
           emptyMessage: currentTag
             ? `No bookmarks with tag #${currentTag.name}`
             : "Tag has no bookmarks.",
@@ -58,7 +58,7 @@ export function useBookmarkPageMeta({
       case view === "unsorted":
         pageMeta = {
           pageTitle: "Unsorted",
-          PageIcon: <Inbox className="w-5 h-5 text-slate-400" />,
+          PageIcon: <Inbox className="w-5 h-5 text-muted" />,
           emptyMessage: "Every bookmark has a folder or a tag.",
         };
         break;

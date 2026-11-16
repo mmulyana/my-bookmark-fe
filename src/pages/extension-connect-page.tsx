@@ -2,7 +2,7 @@ import { BookmarkCheck, CheckCircle2 } from 'lucide-react'
 
 export const ExtensionConnectPage = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-canvas px-4">
       <div className="w-full max-w-sm text-center">
         <div className="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs mb-4 mx-auto">
           <BookmarkCheck className="w-6 h-6" />

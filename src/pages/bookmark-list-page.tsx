@@ -98,41 +98,33 @@ export const BookmarkListPage: FC<BookmarkListPageProps> = ({ view }) => {
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between gap-4 mb-5">
+        <h1 className="flex items-center gap-2.5 text-2xl font-semibold tracking-tight min-w-0">
           {PageIcon}
-          <div>
-            <h2 className="text-lg font-semibold text-slate-900 tracking-tight flex items-center gap-2">
-              {pageTitle}
-            </h2>
-          </div>
-        </div>
+          <span className="truncate">{pageTitle}</span>
+        </h1>
 
-        <div className="flex items-center gap-0.5 bg-slate-100 rounded-lg p-0.5 self-start">
-          <button
-            onClick={() => setViewMode("list")}
-            aria-label="List view"
-            className={cn(
-              "p-1.5 rounded-md transition-colors cursor-pointer",
-              viewMode === "list"
-                ? "bg-white text-slate-900"
-                : "text-slate-400 hover:text-slate-600",
-            )}
-          >
-            <List className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => setViewMode("grid")}
-            aria-label="Grid view"
-            className={cn(
-              "p-1.5 rounded-md transition-colors cursor-pointer",
-              viewMode === "grid"
-                ? "bg-white text-slate-900"
-                : "text-slate-400 hover:text-slate-600",
-            )}
-          >
-            <LayoutGrid className="w-4 h-4" />
-          </button>
+        <div className="flex items-center gap-0.5 bg-black/[0.05] rounded-full p-0.5 shrink-0">
+          {(
+            [
+              ["list", List, "List view"],
+              ["grid", LayoutGrid, "Grid view"],
+            ] as const
+          ).map(([mode, Icon, label]) => (
+            <button
+              key={mode}
+              onClick={() => setViewMode(mode)}
+              aria-label={label}
+              className={cn(
+                "size-7 grid place-items-center rounded-full transition-colors cursor-pointer",
+                viewMode === mode
+                  ? "bg-white text-ink shadow-xs"
+                  : "text-muted hover:text-ink",
+              )}
+            >
+              <Icon className="w-3.5 h-3.5" />
+            </button>
+          ))}
         </div>
       </div>
 
