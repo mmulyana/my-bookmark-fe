@@ -9,6 +9,7 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider as JotaiProvider, useSetAtom } from "jotai";
 import { AppLayout } from "@/components/layout/app-layout";
+import { HomePage } from "@/pages/home-page";
 import { BookmarkListPage } from "@/pages/bookmark-list-page";
 import { TagsPage } from "@/pages/tags-page";
 import { LoginPage } from "@/pages/login-page";
@@ -69,7 +70,8 @@ export function App() {
                 </RequireAuth>
               }
             >
-              <Route index element={<BookmarkListPage />} />
+              <Route index element={<HomePage />} />
+              <Route path="bookmarks" element={<BookmarkListPage />} />
               <Route path="folder/:folderId" element={<BookmarkListPage />} />
               <Route path="tags" element={<TagsPage />} />
               <Route path="tags/:tagId" element={<BookmarkListPage />} />

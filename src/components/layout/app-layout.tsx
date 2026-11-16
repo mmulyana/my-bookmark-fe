@@ -7,12 +7,14 @@ import { Aside } from './aside'
 
 export const AppLayout = () => {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-canvas">
       <div className="flex">
         <Aside />
 
-        <main className="flex-1 min-w-0 p-4">
-          <Outlet />
+        <main className="flex-1 min-w-0">
+          <div className="mx-auto max-w-5xl px-6 sm:px-10 py-10">
+            <Outlet />
+          </div>
         </main>
       </div>
 

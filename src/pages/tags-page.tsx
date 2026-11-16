@@ -13,11 +13,11 @@ export const TagsPage: FC = () => {
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5">
         <div className="flex items-center gap-2">
-          <TagIcon className="w-5 h-5 text-indigo-500 stroke-2" />
+          <TagIcon className="w-5 h-5 text-muted" />
           <div>
-            <h2 className="text-lg font-semibold text-slate-900 tracking-tight flex items-center gap-2">
+            <h2 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
               Tags
             </h2>
           </div>
@@ -25,7 +25,8 @@ export const TagsPage: FC = () => {
 
         <Button
           onClick={() => setTagModal({ isOpen: true, mode: "create" })}
-          className="gap-1 h-fit py-1 pl-2 pr-2.5"
+          size="sm"
+          className="gap-1 rounded-full pl-2.5 pr-3.5"
         >
           <Plus className="w-4 h-4" />
           New Tag
@@ -33,49 +34,48 @@ export const TagsPage: FC = () => {
       </div>
 
       {tags.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-12 text-center bg-white rounded-2xl border border-dashed border-slate-200">
-          <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center mb-3">
-            <TagIcon className="w-6 h-6 text-slate-400" />
+        <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-dashed border-line">
+          <div className="w-12 h-12 rounded-full bg-black/[0.04] flex items-center justify-center mb-3">
+            <TagIcon className="w-6 h-6 text-muted" />
           </div>
-          <h3 className="text-base font-medium text-slate-800">No tags yet</h3>
-          <p className="mt-1 text-sm text-slate-500 max-w-sm">
+          <h3 className="text-base font-medium">No tags yet</h3>
+          <p className="mt-1 text-sm text-muted max-w-sm">
             Create a tag to start organizing your bookmarks.
           </p>
           <Button
-            variant="primary"
             size="sm"
             onClick={() => setTagModal({ isOpen: true, mode: "create" })}
-            className="mt-4"
+            className="mt-4 rounded-full"
           >
             <Plus className="w-4 h-4 mr-1" />
             Add Tag
           </Button>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs divide-y divide-slate-100 overflow-hidden">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
           {tags.map((tag) => (
             <div
               key={tag.id}
-              className="group relative flex items-center gap-3 px-4 py-2 hover:bg-slate-50/80 transition-colors"
+              className="group relative rounded-2xl border border-line bg-card hover:border-black/15 transition-colors"
             >
               <Link
                 to={`/tags/${tag.id}`}
-                className="flex items-center gap-3 flex-1 min-w-0 cursor-pointer"
+                className="flex items-center gap-3 px-4 py-4 min-w-0"
               >
-                <div className="min-w-0 flex gap-1 items-center">
-                  <p className="text-sm font-semibold text-slate-900 truncate">
-                    {tag.name}
-                  </p>
-                </div>
+                <span className="size-8 shrink-0 rounded-full bg-white ring-1 ring-black/5 shadow-xs grid place-items-center text-sm font-medium text-muted">
+                  #
+                </span>
+                <span className="text-sm font-medium truncate">{tag.name}</span>
               </Link>
 
-              <div className="opacity-0 group-hover:opacity-100 flex items-center gap-0.5 shrink-0 transition-opacity">
+              <div className="absolute top-1/2 -translate-y-1/2 right-2 opacity-0 group-hover:opacity-100 flex items-center bg-white/90 backdrop-blur rounded-lg border border-line transition-opacity">
                 <button
                   onClick={() =>
                     setTagModal({ isOpen: true, mode: "edit", tag })
                   }
-                  className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                  className="p-1.5 text-muted hover:text-ink rounded-md transition-colors cursor-pointer"
                   title="Edit tag"
+                  aria-label="Edit tag"
                 >
                   <Pencil className="w-3.5 h-3.5" />
                 </button>
@@ -88,8 +88,9 @@ export const TagsPage: FC = () => {
                       title: tag.name,
                     })
                   }
-                  className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                  className="p-1.5 text-muted hover:text-rose-600 rounded-md transition-colors cursor-pointer"
                   title="Delete tag"
+                  aria-label="Delete tag"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
