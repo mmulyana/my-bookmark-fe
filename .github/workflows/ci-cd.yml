@@ -41,6 +41,6 @@ jobs:
 
       - name: Deploy
         run: |
-          ssh ${{ secrets.SSH_USER }}@103.179.57.159 "cd ~/my-bookmark && docker compose pull bookmark-fe"
-          ssh ${{ secrets.SSH_USER }}@103.179.57.159 "cd ~/my-bookmark && docker compose up -d bookmark-fe"
-          ssh ${{ secrets.SSH_USER }}@103.179.57.159 "docker system prune -af || true"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.PUBLIC_IP }} "cd ~/my-bookmark && docker compose pull bookmark-fe"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.PUBLIC_IP }} "cd ~/my-bookmark && docker compose up -d bookmark-fe"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.PUBLIC_IP }} "docker system prune -af || true"
