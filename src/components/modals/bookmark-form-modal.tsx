@@ -17,6 +17,7 @@ type BookmarkForm = {
   title: string;
   description: string;
   favicon: string;
+  imageUrl: string;
   folderId: string | null;
   selectedTagIds: string[];
   isFavorite: boolean;
@@ -39,6 +40,7 @@ export const BookmarkFormModal = () => {
     title: "",
     description: "",
     favicon: "",
+    imageUrl: "",
     folderId: null,
     selectedTagIds: [],
     isFavorite: false,
@@ -51,6 +53,7 @@ export const BookmarkFormModal = () => {
     title,
     description,
     favicon,
+    imageUrl,
     folderId,
     selectedTagIds,
     isFavorite,
@@ -72,6 +75,7 @@ export const BookmarkFormModal = () => {
           title: b.title,
           description: b.description || "",
           favicon: b.favicon || "",
+          imageUrl: b.imageUrl || "",
           folderId: b.folderId || null,
           selectedTagIds: b.tagIds || [],
           isFavorite: b.isFavorite,
@@ -82,6 +86,7 @@ export const BookmarkFormModal = () => {
           title: "",
           description: "",
           favicon: "",
+          imageUrl: "",
           folderId: modalState.defaultFolderId || null,
           selectedTagIds: modalState.defaultTagId
             ? [modalState.defaultTagId]
@@ -130,6 +135,9 @@ export const BookmarkFormModal = () => {
       }
       if (meta.favicon) {
         updateForm("favicon", meta.favicon);
+      }
+      if (meta.imageUrl) {
+        updateForm("imageUrl", meta.imageUrl);
       }
     } catch {
       setError("Could not auto-fetch info. You can fill it manually.");
@@ -193,6 +201,7 @@ export const BookmarkFormModal = () => {
             title: trimmedTitle,
             description: description.trim() || undefined,
             favicon: favicon.trim() || undefined,
+            imageUrl: imageUrl.trim() || undefined,
             folderId: folderId || null,
             tagIds: selectedTagIds,
             isFavorite,
@@ -204,6 +213,7 @@ export const BookmarkFormModal = () => {
           title: trimmedTitle,
           description: description.trim() || undefined,
           favicon: favicon.trim() || undefined,
+          imageUrl: imageUrl.trim() || undefined,
           folderId: folderId || null,
           tagIds: selectedTagIds,
           isFavorite,

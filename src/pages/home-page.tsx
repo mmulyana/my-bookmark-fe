@@ -1,7 +1,7 @@
 import { useMemo, type FC, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useSetAtom } from "jotai";
-import { Clock, Pin, Search, SquarePen } from "lucide-react";
+import { Clock, Pin, SquarePen } from "lucide-react";
 import { bookmarkModalAtom } from "@/atoms/ui";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import { useFolders } from "@/hooks/use-folders";
@@ -108,13 +108,6 @@ export const HomePage: FC = () => {
         >
           <SquarePen className="w-3.5 h-3.5" />
           New Bookmark
-        </button>
-        <button
-          onClick={() => document.getElementById("global-search")?.focus()}
-          className="h-8 pl-3 pr-3.5 rounded-full bg-card border border-line text-xs font-medium inline-flex items-center gap-1.5 hover:bg-black/[0.04] transition-colors cursor-pointer"
-        >
-          <Search className="w-3.5 h-3.5" />
-          Search
         </button>
       </div>
 
