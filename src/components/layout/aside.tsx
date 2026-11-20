@@ -1,9 +1,10 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import {
   bookmarkModalAtom,
   folderModalAtom,
   confirmDeleteDialogAtom,
+  mobileNavOpenAtom,
 } from "@/atoms/ui";
 import { isAuthenticatedAtom } from "@/atoms/auth";
 import { clearTokens } from "@/lib/auth-storage";
@@ -71,6 +72,7 @@ export const Aside = () => {
   const setDeleteDialog = useSetAtom(confirmDeleteDialogAtom);
   const setIsAuthenticated = useSetAtom(isAuthenticatedAtom);
   const navigate = useNavigate();
+  const mobileNavOpen = useAtomValue(mobileNavOpenAtom);
 
   const handleLogout = () => {
     clearTokens();
@@ -79,7 +81,12 @@ export const Aside = () => {
   };
 
   return (
-    <aside className="w-64 bg-sidebar border-r border-line flex flex-col shrink-0 sticky top-0 h-screen">
+    <aside
+      className={cn(
+        "w-64 bg-sidebar border-r border-line flex flex-col shrink-0 h-dvh fixed inset-y-0 left-0 z-40 transition-transform duration-200 md:sticky md:top-0 md:z-auto md:translate-x-0",
+        mobileNavOpen ? "translate-x-0" : "-translate-x-full",
+      )}
+    >
       <div className="h-14 flex items-center justify-between gap-2 pl-4 pr-3 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
           <div className="w-5 h-5 rounded-md bg-ink text-white flex items-center justify-center shrink-0">
