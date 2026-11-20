@@ -31,6 +31,8 @@ export interface ConfirmDeleteState {
   title: string;
 }
 
+export const mobileNavOpenAtom = atom<boolean>(false);
+
 export const searchQueryAtom = atom<string>("");
 
 export const bookmarkViewModeAtom = atomWithStorage<BookmarkViewMode>(

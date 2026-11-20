@@ -138,7 +138,7 @@ export const BookmarkCard = ({
           )}
         </a>
 
-        <div className="absolute top-2 right-2 flex items-center bg-white/90 backdrop-blur rounded-lg border border-line opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute top-2 right-2 flex items-center bg-white/90 backdrop-blur rounded-lg border border-line md:opacity-0 md:group-hover:opacity-100 transition-opacity">
           {actions}
         </div>
 
@@ -229,7 +229,7 @@ export const BookmarkCard = ({
       <div
         className={cn(
           "flex items-center shrink-0 transition-opacity",
-          !bookmark.isFavorite && "opacity-0 group-hover:opacity-100",
+          !bookmark.isFavorite && "md:opacity-0 md:group-hover:opacity-100",
         )}
       >
         {actions}
