@@ -5,25 +5,29 @@ import { useImages, useUploadImages } from "@/hooks/use-images";
 import { useTags } from "@/hooks/use-tags";
 import { Button } from "@/components/ui/Button";
 import { ImageDetailModal } from "@/components/images/image-detail-modal";
+import {
+  TagFilter,
+  type TagFilterValue,
+} from "@/components/images/tag-filter";
 import { cn } from "@/lib/utils";
 import type { UploadFailure } from "@/types";
 
 const ACCEPT = "image/png,image/jpeg,image/gif,image/webp";
 
-type TagFilter = "all" | "untagged";
-
 export const ImagesPage: FC = () => {
   const { data: tags = [] } = useTags();
-  const [tagIds, setTagIds] = useState<string[]>([]);
-  const [mode, setMode] = useState<TagFilter>("all");
+  const [filter, setFilter] = useState<TagFilterValue>({
+    tagIds: [],
+    untagged: false,
+  });
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
   const [failures, setFailures] = useState<UploadFailure[]>([]);
   const fileInput = useRef<HTMLInputElement>(null);
 
   const filters = useMemo(
-    () => (mode === "untagged" ? { hasTags: false } : { tagIds }),
-    [mode, tagIds],
+    () => (filter.untagged ? { hasTags: false } : { tagIds: filter.tagIds }),
+    [filter],
   );
   const {
     data,
@@ -67,21 +71,6 @@ export const ImagesPage: FC = () => {
     return () => window.removeEventListener("paste", onPaste);
   }, [handleFiles]);
 
-  const toggleTag = (id: string) => {
-    setMode("all");
-    setTagIds((prev) =>
-      prev.includes(id) ? prev.filter((t) => t !== id) : [...prev, id],
-    );
-  };
-
-  const chip = (active: boolean) =>
-    cn(
-      "px-3 h-7 rounded-full text-xs font-medium border transition-colors cursor-pointer",
-      active
-        ? "bg-ink text-white border-ink"
-        : "bg-white text-ink/75 border-line hover:border-black/20",
-    );
-
   return (
     <div
       onDragOver={(e) => {
@@ -107,15 +96,18 @@ export const ImagesPage: FC = () => {
           <ImageIcon className="w-5 h-5 text-muted" />
           <h2 className="text-2xl font-semibold tracking-tight">Images</h2>
         </div>
-        <Button
-          size="sm"
-          className="gap-1 rounded-full pl-2.5 pr-3.5"
-          onClick={() => fileInput.current?.click()}
-          isLoading={upload.isPending}
-        >
-          {!upload.isPending && <Upload className="w-4 h-4" />}
-          Upload
-        </Button>
+        <div className="flex items-center gap-2">
+          <TagFilter tags={tags} value={filter} onChange={setFilter} />
+          <Button
+            size="sm"
+            className="gap-1 rounded-full pl-2.5 pr-3.5"
+            onClick={() => fileInput.current?.click()}
+            isLoading={upload.isPending}
+          >
+            {!upload.isPending && <Upload className="w-4 h-4" />}
+            Upload
+          </Button>
+        </div>
         <input
           ref={fileInput}
           type="file"
@@ -127,33 +119,6 @@ export const ImagesPage: FC = () => {
             e.target.value = "";
           }}
         />
-      </div>
-
-      <div className="flex flex-wrap gap-1.5 pb-5">
-        <button
-          className={chip(mode === "all" && tagIds.length === 0)}
-          onClick={() => {
-            setMode("all");
-            setTagIds([]);
-          }}
-        >
-          All
-        </button>
-        <button
-          className={chip(mode === "untagged")}
-          onClick={() => setMode("untagged")}
-        >
-          Untagged
-        </button>
-        {tags.map((tag) => (
-          <button
-            key={tag.id}
-            className={chip(mode === "all" && tagIds.includes(tag.id))}
-            onClick={() => toggleTag(tag.id)}
-          >
-            #{tag.name}
-          </button>
-        ))}
       </div>
 
       {failures.length > 0 && (
@@ -190,7 +155,7 @@ export const ImagesPage: FC = () => {
             <ImageIcon className="w-6 h-6 text-muted" />
           </div>
           <h3 className="text-base font-medium">
-            {tagIds.length > 0 || mode === "untagged"
+            {filter.untagged || filter.tagIds.length > 0
               ? "No images match this filter"
               : "No images yet"}
           </h3>
@@ -217,6 +182,7 @@ export const ImagesPage: FC = () => {
                   alt={img.name}
                   loading="lazy"
                   decoding="async"
+                  draggable={false}
                   className="h-full w-full object-cover"
                 />
                 <span className="absolute inset-x-0 bottom-0 truncate bg-gradient-to-t from-black/60 to-transparent px-2.5 pb-1.5 pt-6 text-left text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
