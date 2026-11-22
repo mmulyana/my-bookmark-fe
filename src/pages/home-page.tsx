@@ -111,16 +111,16 @@ export const HomePage: FC = () => {
         </button>
       </div>
 
-      <Section icon={Clock} title="Jump back in" to="/bookmarks">
-        {grid(recent.isLoading, recentItems, "Belum ada bookmark. Tambahkan yang pertama.")}
-      </Section>
-
       <Section icon={Pin} title="Pinned" to="/favorites">
         {grid(
           favorites.isLoading,
           favoriteItems,
           "Tandai bookmark dengan bintang untuk menyematkannya di sini.",
         )}
+      </Section>
+
+      <Section icon={Clock} title="Jump back in" to="/bookmarks">
+        {grid(recent.isLoading, recentItems, "Belum ada bookmark. Tambahkan yang pertama.")}
       </Section>
     </div>
   );
