@@ -1,4 +1,4 @@
-import type { Bookmark, Folder, Tag } from '@/types'
+import type { Bookmark, Folder, Image, Tag } from '@/types'
 
 const folders: Folder[] = [
   { id: 'f-illustrations', name: 'Illustrations' },
@@ -15,6 +15,27 @@ const tags: Tag[] = [
   { id: 't-3', name: 'tailwind' },
   { id: 't-4', name: 'design' },
   { id: 't-5', name: 'tools' },
+]
+
+const seedImage = (n: number, w: number, h: number, tagIds: string[]): Image => ({
+  id: `i-${n}`,
+  name: `sample-${n}.jpg`,
+  url: `https://picsum.photos/seed/mybookmark-${n}/${w}/${h}`,
+  mimeType: 'image/jpeg',
+  sizeBytes: 120_000 + n * 7_000,
+  width: w,
+  height: h,
+  tagIds,
+  createdAt: new Date(Date.UTC(2026, 0, 30 - n)).toISOString(),
+})
+
+let images: Image[] = [
+  seedImage(1, 600, 800, ['t-4']),
+  seedImage(2, 800, 600, ['t-4', 't-illustrations']),
+  seedImage(3, 700, 700, []),
+  seedImage(4, 600, 900, ['t-illustrations']),
+  seedImage(5, 900, 600, []),
+  seedImage(6, 640, 640, ['t-5']),
 ]
 
 let bookmarks: Bookmark[] = [
@@ -163,6 +184,7 @@ export const mockDb = {
     const index = tags.findIndex((t) => t.id === id)
     if (index === -1) return false
     tags.splice(index, 1)
+    images = images.map((i) => ({ ...i, tagIds: i.tagIds.filter((tId) => tId !== id) }))
     bookmarks = bookmarks.map((b) => ({
       ...b,
       tagIds: b.tagIds.filter((tId) => tId !== id),
@@ -191,6 +213,48 @@ export const mockDb = {
     const index = bookmarks.findIndex((b) => b.id === id)
     if (index === -1) return false
     bookmarks.splice(index, 1)
+    return true
+  },
+
+  getImages: (opts: { tagIds: string[]; hasTags?: boolean; lastId?: string; perPage: number }): Image[] => {
+    let result = images.filter(
+      (i) =>
+        (opts.hasTags === undefined || (i.tagIds.length > 0) === opts.hasTags) &&
+        opts.tagIds.every((t) => i.tagIds.includes(t)),
+    )
+    result = [...result].sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    if (opts.lastId) {
+      const idx = result.findIndex((i) => i.id === opts.lastId)
+      if (idx !== -1) result = result.slice(idx + 1)
+    }
+    return result.slice(0, opts.perPage)
+  },
+  createImage: (file: File, width: number | null, height: number | null): Image => {
+    const image: Image = {
+      id: `i-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      name: file.name,
+      url: URL.createObjectURL(file),
+      mimeType: file.type,
+      sizeBytes: file.size,
+      width,
+      height,
+      tagIds: [],
+      createdAt: new Date().toISOString(),
+    }
+    images.unshift(image)
+    return image
+  },
+  updateImage: (id: string, data: { name?: string; tagIds?: string[] }): Image | null => {
+    const image = images.find((i) => i.id === id)
+    if (!image) return null
+    if (data.name !== undefined) image.name = data.name
+    if (data.tagIds !== undefined) image.tagIds = data.tagIds
+    return { ...image }
+  },
+  deleteImage: (id: string): boolean => {
+    const index = images.findIndex((i) => i.id === id)
+    if (index === -1) return false
+    images.splice(index, 1)
     return true
   },
 }

@@ -26,7 +26,7 @@ export interface TagModalState {
 
 export interface ConfirmDeleteState {
   isOpen: boolean;
-  type: "bookmark" | "folder" | "tag";
+  type: "bookmark" | "folder" | "tag" | "image";
   id: string;
   title: string;
 }

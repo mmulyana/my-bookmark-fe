@@ -1,6 +1,6 @@
 import { http, HttpResponse, delay } from 'msw'
 import { mockDb } from './db'
-import type { CreateBookmarkInput, UpdateBookmarkInput, CreateFolderInput, UpdateFolderInput, CreateTagInput, UpdateTagInput } from '@/types'
+import type { UpdateImageInput, CreateBookmarkInput, UpdateBookmarkInput, CreateFolderInput, UpdateFolderInput, CreateTagInput, UpdateTagInput } from '@/types'
 
 export const handlers = [
   http.get('/folders', () => {
@@ -69,6 +69,63 @@ export const handlers = [
     const success = mockDb.deleteTag(id)
     if (!success) {
       return HttpResponse.json({ message: 'Tag not found' }, { status: 404 })
+    }
+    return HttpResponse.json({ success: true })
+  }),
+
+  http.get('/images', ({ request }) => {
+    const q = new URL(request.url).searchParams
+    const hasTags = q.get('hasTags')
+    return HttpResponse.json(
+      mockDb.getImages({
+        tagIds: q.get('tagIds')?.split(',').filter(Boolean) ?? [],
+        hasTags: hasTags === null ? undefined : hasTags === 'true',
+        lastId: q.get('last_id') ?? undefined,
+        perPage: Number(q.get('per_page') ?? 40),
+      }),
+    )
+  }),
+
+  http.post('/images', async ({ request }) => {
+    const form = await request.formData()
+    const files = form.getAll('files').filter((f): f is File => f instanceof File)
+    if (files.length === 0) {
+      return HttpResponse.json({ message: 'no "files" parts found' }, { status: 400 })
+    }
+    const result = { images: [] as ReturnType<typeof mockDb.createImage>[], failed: [] as { name: string; message: string }[] }
+    for (const file of files) {
+      if (!['image/png', 'image/jpeg', 'image/gif', 'image/webp'].includes(file.type)) {
+        result.failed.push({ name: file.name, message: 'unsupported file type (png, jpeg, gif, webp only)' })
+        continue
+      }
+      if (file.size > 10 << 20) {
+        result.failed.push({ name: file.name, message: 'file larger than 10 MB' })
+        continue
+      }
+      const bitmap = await createImageBitmap(file).catch(() => null)
+      result.images.push(mockDb.createImage(file, bitmap?.width ?? null, bitmap?.height ?? null))
+      bitmap?.close()
+    }
+    return HttpResponse.json(result, { status: result.images.length ? 201 : 422 })
+  }),
+
+  http.patch('/images/:id', async ({ params, request }) => {
+    const { id } = params as { id: string }
+    const body = (await request.json()) as UpdateImageInput
+    if (body.name !== undefined && !body.name.trim()) {
+      return HttpResponse.json({ message: 'Name must not be empty' }, { status: 400 })
+    }
+    const updated = mockDb.updateImage(id, { name: body.name?.trim(), tagIds: body.tagIds })
+    if (!updated) {
+      return HttpResponse.json({ message: 'Image not found' }, { status: 404 })
+    }
+    return HttpResponse.json(updated)
+  }),
+
+  http.delete('/images/:id', ({ params }) => {
+    const { id } = params as { id: string }
+    if (!mockDb.deleteImage(id)) {
+      return HttpResponse.json({ message: 'Image not found' }, { status: 404 })
     }
     return HttpResponse.json({ success: true })
   }),
