@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { tagsApi } from "@/api/tags";
 import { BOOKMARKS_QUERY_KEY } from "./use-bookmarks";
+import { IMAGES_QUERY_KEY } from "./use-images";
 import type { CreateTagInput, UpdateTagInput } from "@/types";
 
 export const TAGS_QUERY_KEY = ["tags"];
@@ -40,6 +41,7 @@ export function useDeleteTag() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: TAGS_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: BOOKMARKS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: IMAGES_QUERY_KEY });
     },
   });
 }

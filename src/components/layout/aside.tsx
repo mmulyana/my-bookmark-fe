@@ -21,6 +21,7 @@ import {
   LogOut,
   Star,
   Inbox,
+  Image as ImageIcon,
   SquarePen,
   type LucideIcon,
 } from "lucide-react";
@@ -112,6 +113,7 @@ export const Aside = () => {
         <div className="space-y-0.5">
           <NavItem to="/" end icon={Home} label="Home" />
           <NavItem to="/bookmarks" icon={Bookmark} label="All Bookmarks" />
+          <NavItem to="/images" icon={ImageIcon} label="Images" />
         </div>
 
         <div className="space-y-0.5">

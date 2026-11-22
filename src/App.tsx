@@ -12,6 +12,7 @@ import { AppLayout } from "@/components/layout/app-layout";
 import { HomePage } from "@/pages/home-page";
 import { BookmarkListPage } from "@/pages/bookmark-list-page";
 import { TagsPage } from "@/pages/tags-page";
+import { ImagesPage } from "@/pages/images-page";
 import { LoginPage } from "@/pages/login-page";
 import { RegisterPage } from "@/pages/register-page";
 import { ExtensionConnectPage } from "@/pages/extension-connect-page";
@@ -73,6 +74,7 @@ export function App() {
               <Route index element={<HomePage />} />
               <Route path="bookmarks" element={<BookmarkListPage />} />
               <Route path="folder/:folderId" element={<BookmarkListPage />} />
+              <Route path="images" element={<ImagesPage />} />
               <Route path="tags" element={<TagsPage />} />
               <Route path="tags/:tagId" element={<BookmarkListPage />} />
               <Route

@@ -7,6 +7,21 @@ import {
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 
+/** Resolves an API-relative path (e.g. an image `url`) so it works in <img src>. */
+export function resolveApiUrl(path: string): string {
+  return /^(https?:|blob:|data:)/.test(path) ? path : `${BASE_URL}${path}`;
+}
+
+export class ApiError<T = unknown> extends Error {
+  status: number;
+  data: T | undefined;
+  constructor(message: string, status: number, data?: T) {
+    super(message);
+    this.status = status;
+    this.data = data;
+  }
+}
+
 export const AUTH_LOGOUT_EVENT = "mybookmark:auth-logout";
 
 let refreshPromise: Promise<boolean> | null = null;
@@ -44,7 +59,9 @@ async function doFetch(
 ): Promise<Response> {
   const accessToken = getAccessToken();
   const headers: Record<string, string> = {
-    "Content-Type": "application/json",
+    ...(options.body instanceof FormData
+      ? {}
+      : { "Content-Type": "application/json" }),
     ...(options.headers as Record<string, string>),
   };
   if (accessToken) {
@@ -72,13 +89,15 @@ export async function apiClient<T>(
 
   if (!response.ok) {
     let errorMessage = `HTTP error! status: ${response.status}`;
+    let errorData: unknown;
     try {
-      const errorData = await response.json();
-      if (errorData?.message) {
-        errorMessage = errorData.message;
+      errorData = await response.json();
+      const message = (errorData as { message?: string } | null)?.message;
+      if (message) {
+        errorMessage = message;
       }
     } catch {}
-    throw new Error(errorMessage);
+    throw new ApiError(errorMessage, response.status, errorData);
   }
 
   if (

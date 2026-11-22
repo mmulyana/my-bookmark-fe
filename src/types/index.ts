@@ -65,3 +65,30 @@ export interface CreateTagInput {
 export interface UpdateTagInput {
   name: string
 }
+
+export interface Image {
+  id: string
+  name: string
+  url: string
+  mimeType: string
+  sizeBytes: number
+  width?: number | null
+  height?: number | null
+  tagIds: string[]
+  createdAt: string
+}
+
+export interface UpdateImageInput {
+  name?: string
+  tagIds?: string[]
+}
+
+export interface UploadFailure {
+  name: string
+  message: string
+}
+
+export interface UploadImagesResult {
+  images: Image[]
+  failed: UploadFailure[]
+}

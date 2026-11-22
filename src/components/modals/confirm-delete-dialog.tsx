@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button'
 import { useDeleteBookmark } from '@/hooks/use-bookmarks'
 import { useDeleteFolder } from '@/hooks/use-folders'
 import { useDeleteTag } from '@/hooks/use-tags'
+import { useDeleteImage } from '@/hooks/use-images'
 import { AlertTriangle } from 'lucide-react'
 
 export const ConfirmDeleteDialog = () => {
@@ -13,6 +14,7 @@ export const ConfirmDeleteDialog = () => {
   const deleteBookmarkMutation = useDeleteBookmark()
   const deleteFolderMutation = useDeleteFolder()
   const deleteTagMutation = useDeleteTag()
+  const deleteImageMutation = useDeleteImage()
 
   const handleClose = () => {
     setState((prev) => ({ ...prev, isOpen: false }))
@@ -21,7 +23,8 @@ export const ConfirmDeleteDialog = () => {
   const isLoading =
     deleteBookmarkMutation.isPending ||
     deleteFolderMutation.isPending ||
-    deleteTagMutation.isPending
+    deleteTagMutation.isPending ||
+    deleteImageMutation.isPending
 
   const handleDelete = async () => {
     try {
@@ -31,6 +34,8 @@ export const ConfirmDeleteDialog = () => {
         await deleteFolderMutation.mutateAsync(state.id)
       } else if (state.type === 'tag') {
         await deleteTagMutation.mutateAsync(state.id)
+      } else if (state.type === 'image') {
+        await deleteImageMutation.mutateAsync(state.id)
       }
       handleClose()
     } catch (err) {
@@ -42,6 +47,7 @@ export const ConfirmDeleteDialog = () => {
     bookmark: 'Bookmark',
     folder: 'Folder',
     tag: 'Tag',
+    image: 'Image',
   }
 
   return (
